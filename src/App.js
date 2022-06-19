@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Switch, Route, } from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route,  } from "react-router-dom";
 import { Header } from './components/ui/Header'; 
 import {EstadosView} from './components/estados/EstadosView'
 import {InventarioView} from './components/inventarios/InventarioView'
@@ -7,6 +7,7 @@ import {MarcaView} from './components/marcas/MarcaView'
 import {TipoView} from './components/tipos/TipoView'
 import {UsuarioView} from './components/usuarios/UsuarioView'
 import { Redirect } from 'react-router-dom';
+
 
 const App = () => {
     return <Router>
@@ -21,7 +22,6 @@ const App = () => {
     </Switch>
 </Router>
 }
-    
 
 export {
     App
