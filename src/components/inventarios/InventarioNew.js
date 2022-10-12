@@ -4,8 +4,9 @@ import {getEstadosEquipos} from '../../services/estadoEquipoService';
 import {getMarcas} from '../../services/marcaService';
 import {getTiposEquipos} from '../../services/tipoEquipoService';
 import {crearInventario} from '../../services/inventarioService';
+import Swal from 'sweetalert2';
 
-export const InventarioNew = ({handleOpenModal}) => {
+export const InventarioNew = ({handleOpenModal, listarInventarios}) => {
 
     const [usuarios, setUsuarios] = useState([]);
     const [marcas, setMarcas] = useState([]);
@@ -13,28 +14,30 @@ export const InventarioNew = ({handleOpenModal}) => {
     const [estados, setEstados] = useState([]);
     const [valoresForm, setValoresForm] = useState([]);
     const { serial = '', modelo = '', descripcion = '', color = '', foto = '', 
-            fechaCompra = '', precio = '', usuario, marca, tipo, estado } = valoresForm;
+            fechaCompra = '', precio = '', usuario, marca, tipoEquipo, estadoEquipo } = valoresForm;
 
-    const listarUsuarios = async () => {
+    const listarUsuarios=async()=>{
         try {
-            const { data } = await getUsuarios();
-            setUsuarios(data);
-        } catch (error){
+            const {data}= await getUsuarios();
+            setUsuarios (data);
+            console.log(data);
+        } catch (error) {
             console.log(error);
         }
     }
 
     useEffect( () =>{
         listarUsuarios();
-    },[])
-    const listarMarcas = async () => {
-    try {
-        const { data } = await getMarcas();
-        setMarcas(data);
-    } catch (error){
-        console.log(error);
-    }
-    }   
+    },[]);
+
+    const listarMarcas=async()=>{
+        try {
+            const {data}=await getMarcas();
+            setMarcas (data);
+        } catch (error) {
+            console.log(error);
+        }
+    }  
 
     useEffect( () =>{
        listarMarcas(); 
@@ -81,18 +84,34 @@ export const InventarioNew = ({handleOpenModal}) => {
                 _id: marca
             },
             tipoEquipo:{
-                _id: tipo
+                _id: tipoEquipo
             },
             estadoEquipo:{
-                _id: estado
+                _id: estadoEquipo
             }
         }
         console.log(inventario);
-        try{
-            const { data } = await crearInventario(inventario);
+        try {
+            Swal.fire({
+                allowOutsideClick:false,
+                text: 'CARGANDO.'
+            });
+            Swal.showLoading();
+            const{data}=await crearInventario(inventario);
             console.log(data);
-        }catch (error) {
+            Swal.close();
+            handleOpenModal();
+            listarInventarios();
+        } catch (error) {
             console.log(error);
+            Swal.close();
+            let mensaje;
+            if(error && error.response && error.response.data){
+                mensaje=error.response.data;
+            }else{
+                mensaje='Ocurrio un error, intente de nuevo';
+            }
+            Swal.fire('ERROR',mensaje,'error')
         }
     }
 
@@ -228,7 +247,7 @@ export const InventarioNew = ({handleOpenModal}) => {
                             <select className="form-select" name='tipoEquipo'
                              required
                             onChange = { (e) => handleOnChange(e) }  
-                            value = {tipo} >
+                            value = {tipoEquipo} >
                                 <option value="">--SELECCIONE--</option>
                                 {
                                     tipos.map (tipo => {
@@ -247,7 +266,7 @@ export const InventarioNew = ({handleOpenModal}) => {
                             <select className="form-select" name='estadoEquipo'
                              required
                             onChange = { (e) => handleOnChange(e) }  
-                            value = {estado} >
+                            value = {estadoEquipo} >
                                 <option value="">--SELECCIONE--</option>
                                 {
                                     estados.map (estado => {
@@ -255,7 +274,7 @@ export const InventarioNew = ({handleOpenModal}) => {
                                     })
                                 }
                                 
-                            </select>   
+                            </select>    
                         </div>
                     </div>  
                 </div>

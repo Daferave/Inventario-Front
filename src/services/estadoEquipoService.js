@@ -24,7 +24,14 @@ const editarEstadoEquipo = (estadoEquipoId, data) => {
     });
     return resp;
 }
+const getEstadoEquipoPorId =(estadoEquipoId)=>{
+    return axiosInstance.get(`estado-equipo/${estadoEquipoId}`, {
+      headers: {
+        'Content-type': 'application/json'
+      }
+    });
+  }
 
 export {
-    getEstadosEquipos, crearEstadoEquipo, editarEstadoEquipo
+    getEstadosEquipos, crearEstadoEquipo, editarEstadoEquipo, getEstadoEquipoPorId
 }

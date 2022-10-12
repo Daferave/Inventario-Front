@@ -1,47 +1,56 @@
-import React, { useEffect, useState } from 'react'
-import { getInventarios } from '../../services/inventarioService'
-import { InventarioCard } from './InventarioCard';
-import { InventarioNew } from './InventarioNew';
-
+import React, { useEffect, useState } from "react";
+import {getInventarios} from '../../services/inventarioService';
+import {InventarioCard} from './InventarioCard'; 
+import { InventarioNew } from "./InventarioNew";
+import Swal from 'sweetalert2';
 
 export const InventarioView = () => {
 
-  const [inventarios, setInventario] = useState ([]);
-  const [ openModal, setOpenModal ] = useState (false);
+  const[inventarios,setInventarios]=useState([]);
+  const[openModal,setOpenModal]=useState(false);
 
-  const listarInventarios = async () => {
+  const listarInventarios=async()=>{
     try {
-      const resp = await getInventarios();
-      setInventario(resp.data);
+      Swal.fire({
+        allowOutsideClick:false,
+        text: 'CARGANDO.'
+      }); 
+      const {data} = await getInventarios();
+      console.log(data);
+      setInventarios(data);
+      Swal.close();
     } catch (error) {
       console.log(error);
     }
-  }
+  } 
 
-  useEffect(() => {
+  useEffect(()=>{
     listarInventarios();
-  }, []);
+  },[]);
 
-  const handleOpenModal = () => {
+  const handleOpenModal=()=>{
     setOpenModal(!openModal)
+
   }
 
-  return (
-    <div className = "container-fluid">
+  return ( 
+    <div className="container-fluid">
       <div className="mt-2 mb-2 row row-cols-1 row-cols-md-4 g-4">
-        {
-          inventarios.map ((inventario) =>{
-            return <InventarioCard key={inventario._id} inventario={ inventario }/>
+        { 
+          inventarios.map((inventario)=>{
+            return <InventarioCard key={inventario._id} inventario={inventario}/>
           })
         }
       </div>
+
       {
-        openModal ? <InventarioNew handleOpenModal={handleOpenModal} /> :
-      (<button className='btn btn-primary fab' onClick={ handleOpenModal }>
+        openModal ? <InventarioNew 
+                    handleOpenModal={handleOpenModal}
+                    listarInventarios={listarInventarios}/>
+      : (<button className="btn btn-primary fab" onClick={handleOpenModal}>
           <i className="fa-solid fa-plus"></i>
-      </button>) 
-      } 
+         </button>)
+}
     </div>
   )
 }
-

@@ -24,7 +24,13 @@ const editarUsuario = (usuarioId, data) => {
     });
     return resp;
 }
-
+const getUsuarioPorId =(usuarioId)=>{
+    return axiosInstance.get(`usuario/${usuarioId}`, {
+      headers: {
+        'Content-type': 'application/json'
+      }
+    });
+  }
 export {
-    getUsuarios, crearUsuario, editarUsuario
+    getUsuarios, crearUsuario, editarUsuario, getUsuarioPorId
 }
